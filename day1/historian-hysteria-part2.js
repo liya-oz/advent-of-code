@@ -4,7 +4,7 @@
 const fs = require('fs');
 const path = require('path');
 
-// Extracting numbers
+// Extracting numbers from a string
 function extractNumbers(inputString) {
   const numbers = inputString.match(/\d+/g);
   return numbers ? numbers.map(Number) : [];
@@ -13,8 +13,7 @@ function extractNumbers(inputString) {
 const filePath = path.join(__dirname, 'numbers.txt');
 try {
   const data = fs.readFileSync(filePath, 'utf8');
-
-  const result = extractNumbers(data);
+  const numbers = extractNumbers(data);
 
   function separateNumbers(numbers) {
     const column1 = [];
@@ -31,28 +30,21 @@ try {
     return { column1, column2 };
   }
 
-  const { column1, column2 } = separateNumbers(result);
+  const { column1, column2 } = separateNumbers(numbers);
 
-  function sortNumbersAscending() {
-    return function (array) {
-      return [...array].sort((a, b) => a - b);
-    };
+                       // Solution
+  const getNumberFrequency = (column1, column2) => {
+    const result = {};
+    column1.forEach((num) => {
+      const count = column2.filter((number) => number === num).length;
+      result[num] = count;
+    });
+    return result;
+  };
+
+  const frequencyResult = getNumberFrequency(column1, column2);
+
+  let totalSimilarityScore = 0;
+  for (const num in frequencyResult) {
+    totalSimilarityScore += num * frequencyResult[num];
   }
-
-  const sortedColumn1 = sortNumbersAscending()(column1);
-  const sortedColumn2 = sortNumbersAscending()(column2);
-
-  function sumTotalDifference(array1, array2) {
-    let totalDifference = 0;
-
-    for (let i = 0; i < array1.length; i++) {
-      totalDifference += Math.abs(array1[i] - array2[i]);
-    }
-
-    return totalDifference;
-  }
-
-  console.log(sumTotalDifference(sortedColumn1, sortedColumn2));
-} catch (err) {
-  console.error('Error during reading file:', err);
-}

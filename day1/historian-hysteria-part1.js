@@ -33,6 +33,7 @@ try {
 
   const { column1, column2 } = separateNumbers(result);
 
+  // Solution
   function sortNumbersAscending() {
     return function (array) {
       return [...array].sort((a, b) => a - b);
